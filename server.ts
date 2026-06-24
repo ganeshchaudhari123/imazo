@@ -52,8 +52,15 @@ let promptHistory: any[] = [
 
 // --- AUTO-SWITCHING MULTI-KEY FAILOVER ENGINE ---
 function getActiveGeminiPool(): string[] {
+  // Support a comma-separated list of keys via GEMINI_API_KEYS for easy deployment
+  const listKeys = (process.env.GEMINI_API_KEYS || '')
+    .split(',')
+    .map(k => k.trim())
+    .filter(Boolean);
+
   const pool = [
     process.env.GEMINI_API_KEY,
+    ...listKeys,
     process.env.GEMINI_NODE_ALPHA,
     process.env.GEMINI_NODE_BETA,
     process.env.GEMINI_NODE_GAMMA
