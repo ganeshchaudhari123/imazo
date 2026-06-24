@@ -1,0 +1,6 @@
+{
+  "name": "Imazo",
+  "description": "Specialized Micro-SaaS platform for reverse prompt engineering and AI token optimization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
