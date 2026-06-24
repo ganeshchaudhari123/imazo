@@ -6,6 +6,8 @@ import { GoogleGenAI } from '@google/genai';
 import { createServer as createViteServer } from 'vite';
 
 dotenv.config();
+// Also attempt to load a local override file if present (developer convenience)
+dotenv.config({ path: '.env.local' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -171,9 +173,10 @@ CRITICAL DISCIPLINE: Return ONLY the raw, compile-ready prompt string text. Do n
     for (let i = 0; i < activeKeys.length; i++) {
       try {
         const apiKey = activeKeys[i];
-        if (apiKey === 'AISTUDIO_DEFAULT_RUNTIME_KEY' || !process.env.GEMINI_API_KEY) {
-          // If running in environment without external GenAI key connection, synthesize high-fidelity deterministic prompt directly
-          throw new Error("Local simulated failover trigger");
+        // If the current pool key is missing or explicitly the default placeholder,
+        // treat this as a simulated local failover trigger and advance the circuit.
+        if (!apiKey || apiKey === 'AISTUDIO_DEFAULT_RUNTIME_KEY') {
+          throw new Error('Local simulated failover trigger');
         }
 
         const ai = new GoogleGenAI({ apiKey });
